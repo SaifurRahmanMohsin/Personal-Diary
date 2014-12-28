@@ -3,23 +3,38 @@
  */
 package com.tempestronics;
 
-import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public abstract class AppPanel {
+import com.tempestronics.helpers.DatabaseHandler;
+
+public abstract class AppPanel extends DatabaseHandler {
 	JPanel topPanel, mainPanel, bottomPanel;
-	JFrame parent;
+	Launcher parent;
 	
-	public AppPanel(JFrame parent) {
+	public AppPanel(Launcher parent) {
+		this(parent, true);
+	}
+	
+	public AppPanel(Launcher parent, boolean isStatusEnabled) {
 		this.parent = parent;
 		topPanel = new JPanel();
 		mainPanel = new JPanel();
 		bottomPanel = new JPanel();
+		try {
+			initTopPanel();
+			initMainPanel();
+			if(isStatusEnabled)
+				bottomPanel.add(parent.status);
+			initBottomPanel();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(parent, ex.getMessage());
+		}
 	}
 	
-	protected abstract JPanel initTopPanel() throws Exception ;
-	protected abstract JPanel initMainPanel() throws Exception ;
-	protected abstract JPanel initBottomPanel() throws Exception ;
+	protected abstract void initTopPanel() throws Exception ;
+	protected abstract void initMainPanel() throws Exception ;
+	protected abstract void initBottomPanel() throws Exception ;
 	
 	public JPanel getTopPanel() {
 		return topPanel;

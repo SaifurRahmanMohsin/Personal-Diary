@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -16,55 +17,38 @@ import javax.swing.border.EmptyBorder;
 public class Launcher extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	JPanel prevTopPanel, prevMainPanel, prevBottomPanel; // To store previous panel
-	JPanel topPanel, mainPanel, bottomPanel; // To store the current panel
+	
+	public static final String UPDATE_LOCATION = "http://tempestronics.com/projects/personal-diary/update.json";
+	public static final String CURRENT_VERSION = "1.0.0.0";
+	
+	JPanel topPanel, mainPanel, bottomPanel, temp; // To store the current panel
+	JLabel status = new JLabel("Status: Initializing");
 
 	public void setTopPanel(JPanel topPanel) throws Exception {
 		if(topPanel == null)
 			throw new Exception("Null Panel Exception");
 		add(topPanel, BorderLayout.NORTH);
-		this.prevTopPanel = this.topPanel;
 		this.topPanel = topPanel;
-	}
-
-	public void setExTopPanel() throws Exception {
-		if(prevTopPanel == null)
-			throw new Exception("Null Panel Exception");
-		this.topPanel = prevTopPanel;
 	}
 
 	public void setMainPanel(JPanel mainPanel) throws Exception {
 		if(mainPanel == null)
 			throw new Exception("Null Panel Exception");
 		add(mainPanel, BorderLayout.CENTER);
-		this.prevMainPanel = this.mainPanel;
 		this.mainPanel = mainPanel;
-	}
-
-	public void setExMainPanel() throws Exception {
-		if(prevMainPanel == null)
-			throw new Exception("Null Panel Exception");
-		this.mainPanel = prevMainPanel;
 	}
 
 	public void setBottomPanel(JPanel bottomPanel) throws Exception {
 		if(bottomPanel == null)
 			throw new Exception("Null Panel Exception");
-		JPanel temp = new JPanel(new GridLayout(2,1));
+		temp = new JPanel(new GridLayout(2,1));
 		temp.setBorder(new EmptyBorder(0, 0, 20, 0));
 		temp.add(new JSeparator());
 		temp.add(bottomPanel);
 	    add(temp, BorderLayout.SOUTH);
-		this.prevBottomPanel = this.bottomPanel;
 		this.bottomPanel = bottomPanel;
 	}
-
-	public void setExBottomPanel() throws Exception {
-		if(prevBottomPanel == null)
-			throw new Exception("Null Panel Exception");
-		this.bottomPanel = prevBottomPanel;
-	}
-
+	
 	Dimension screenSize;
 	int diaryHeight, diaryWidth;
 	
@@ -107,11 +91,27 @@ public class Launcher extends JFrame {
 
 	public void setLauncherPanel(AppPanel page) {
 		try {
+			cleanPanels();
 			this.setTopPanel(page.getTopPanel());
 			this.setMainPanel(page.getMainPanel());
 			this.setBottomPanel(page.getBottomPanel());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+	}
+
+	public void cleanPanels() {
+		cleanPanel(topPanel);
+		cleanPanel(mainPanel);
+		cleanPanel(bottomPanel);
+	}
+
+	public void cleanPanel(JPanel panel) {
+		if(panel != null)
+		{
+			panel.removeAll();
+			panel.revalidate();
+			panel.repaint();
 		}
 	}
 
